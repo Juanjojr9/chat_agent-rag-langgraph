@@ -20,7 +20,7 @@ else:
     print("CRITICAL: OPENAI_API_KEY not found in environment variables. Please ensure it is set in your .env file or system environment.")
 
 
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("LANGCHAIN_TRACING_V2")
 print("Tracing activo:", tracing_is_enabled())
 os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
 os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")

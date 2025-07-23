@@ -2,7 +2,7 @@
 from langgraph.graph import StateGraph, END
 
 from langchain_core.runnables import Runnable, RunnableConfig
-from src.componentes.estado import State
+from src.components.estado import State
 
 
 class Assistant:

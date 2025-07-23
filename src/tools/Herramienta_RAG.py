@@ -5,6 +5,9 @@ import os
 from src.tools.rag import RAGLocal
 from typing import Annotated
 
+from src.tools.rag import rag_local as rag
+
+
 @tool
 def Herramienta_RAG(
     input: str,
@@ -23,6 +26,6 @@ def Herramienta_RAG(
         k: el número de trozos que recuperamos de la base de datos vectorizada
 
     """
-    openai_client = openai.OpenAI(api_key= os.getenv("OPENAI_API_KEY"))
-    info = rag.query(input, k=k)
-    return info
+    if rag is None:
+        raise RuntimeError("RAG no inicializado. Llama a init_rag() primero.")
+    return rag.query(input, k=k)

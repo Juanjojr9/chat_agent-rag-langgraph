@@ -3,6 +3,8 @@ import os, faiss, numpy as np, fitz, docx
 from dotenv import load_dotenv
 import openai   # SDK v1.13+
 
+rag_local = None
+
 load_dotenv()   # lee .env (OPENAI_API_KEY, etc.)
 
 class RAGLocal:
@@ -128,3 +130,19 @@ class RAGLocal:
             if idx != -1
         ]
         return "".join(answers) or "No se encontraron documentos relevantes."
+    
+                     # ← objeto global (vacío)
+
+def init_rag(path: str = "data") -> RAGLocal:
+    """
+    Carga o crea el índice una sola vez y lo guarda en rag_local.
+    Devuelve la instancia para quien quiera usarla.
+    """
+    global rag_local
+    if rag_local is None:
+        rag_local = RAGLocal(root_folder=path, index_folder=path+"/faiss_indexes")
+        try:
+            rag_local.load_index()
+        except FileNotFoundError:
+            rag_local.create_index()
+    return rag_local
