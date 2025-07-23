@@ -5,7 +5,7 @@ import os
 from src.tools.rag import RAGLocal
 from typing import Annotated
 
-from src.tools.rag import rag_local as rag
+from src.tools.rag import init_rag
 
 
 @tool
@@ -26,6 +26,5 @@ def Herramienta_RAG(
         k: el número de trozos que recuperamos de la base de datos vectorizada
 
     """
-    if rag is None:
-        raise RuntimeError("RAG no inicializado. Llama a init_rag() primero.")
+    rag = init_rag("data")      # no hace nada si ya existe
     return rag.query(input, k=k)
