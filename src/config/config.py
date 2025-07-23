@@ -4,6 +4,7 @@ import nest_asyncio, asyncio
 from langchain.chat_models import init_chat_model
 import openai
 from langchain_openai import ChatOpenAI
+from langsmith.utils import tracing_is_enabled
 
 nest_asyncio.apply()
 
@@ -20,6 +21,7 @@ else:
 
 
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
+print("Tracing activo:", tracing_is_enabled())
 os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
 os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
 os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
