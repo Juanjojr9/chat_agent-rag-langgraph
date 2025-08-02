@@ -1,10 +1,10 @@
 # rag_local.py
-import os, faiss, numpy as np, fitz, docx
+import os, faiss, numpy as np, fitz, docx , logging
 from dotenv import load_dotenv
 import openai   # SDK v1.13+
-
+from functools import lru_cache
 rag_local = None
-
+logger = logging.getLogger(__name__)
 load_dotenv()   # lee .env (OPENAI_API_KEY, etc.)
 
 class RAGLocal:
@@ -90,7 +90,11 @@ class RAGLocal:
             for chunk in self._chunk(text):
                 documents.append({"path": path, "text": chunk})
 
-        embeds = np.vstack([self._embed(d["text"]) for d in documents])
+        batch = self.client.embeddings.create(
+            model="text-embedding-3-large",
+            input=[d["text"] for d in documents],
+            )
+        embeds = np.vstack([r.embedding for r in batch.data])
         self.dimension = embeds.shape[1]
         self._index = faiss.IndexFlatL2(self.dimension)
         self._index.add(embeds)
@@ -102,7 +106,7 @@ class RAGLocal:
                 line = f"{d['path']}|{d['text'].replace(chr(10), ' ')}\n"
                 fh.write(line)
 
-        print(f"Índice creado en:\n  {self.index_path}\nMetadatos en:\n  {self.meta_path}")
+        logger.info("Índice creado en %s; metadatos en %s", self.index_path, self.meta_path)
 
     def load_index(self):
         """Carga el índice y metadatos ya existentes."""
@@ -133,6 +137,7 @@ class RAGLocal:
     
                      # ← objeto global (vacío)
 
+@lru_cache
 def init_rag(path: str = "data") -> RAGLocal:
     """
     Carga o crea el índice una sola vez y lo guarda en rag_local.

@@ -1,5 +1,9 @@
 from langchain.prompts.chat import ChatPromptTemplate
 from src.tools.rag import RAGLocal
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def modelo_rag(
     query: str,
@@ -23,7 +27,7 @@ def modelo_rag(
     """
     # 1. Recuperar los k fragmentos más relevantes
     retrieved_text = rag_client.query(query, k=k)
-    print(retrieved_text)
+    logger.debug("Contexto recuperado: %s", retrieved_text[:200])
     # 2. Construir el mensaje humano incluyendo el contexto
     #    Podrías adaptar el prefijo “Contexto relevante” al estilo que prefieras.
     human_input = (

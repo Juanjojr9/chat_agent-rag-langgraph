@@ -7,12 +7,12 @@ from typing import Annotated
 
 from src.tools.rag import init_rag
 
-
+_rag = init_rag("data") 
 @tool
 def Herramienta_RAG(
     input: str,
     k: int = 1) -> str:
-    """Siempre usa esta herramienta Esta herramienta te permite buscar información sobre:
+    """Devuelve la búsqueda RAG para *input* recuperando *k* fragmentos. Esta herramienta te permite buscar información sobre:
         redes neuronales
         deep learning
         inteligencia artificial
@@ -26,5 +26,5 @@ def Herramienta_RAG(
         k: el número de trozos que recuperamos de la base de datos vectorizada
 
     """
-    rag = init_rag("data")      # no hace nada si ya existe
-    return rag.query(input, k=k)
+ 
+    return _rag.query(input, k=k)

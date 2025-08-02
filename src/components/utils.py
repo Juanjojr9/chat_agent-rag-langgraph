@@ -3,6 +3,9 @@ from langchain_core.runnables import RunnableLambda
 from langgraph.prebuilt import ToolNode, tools_condition
 from pydantic import BaseModel
 from langgraph.graph import END
+import logging
+
+logger = logging.getLogger(__name__)
 
 def handle_tool_error(state) -> dict:
     error = state.get("error")
@@ -11,7 +14,7 @@ def handle_tool_error(state) -> dict:
         "messages": [
             ToolMessage(
                 content=f"Error: {repr(error)}\n please fix your mistakes.",
-                tool_call_id=tc["id"],
+                tool_call_id=getattr(tc, "id", tc["id"]),
             )
             for tc in tool_calls
         ]
@@ -34,7 +37,7 @@ def route_tools(state):
 def _print_event(event: dict, _printed: set, max_length=1500):
     current_state = event.get("dialog_state")
     if current_state:
-        print("Currently in: ", current_state[-1])
+        logger.debug("Currently in: %s", current_state[-1])
     message = event.get("messages")
     if message:
         if isinstance(message, list):
@@ -43,7 +46,7 @@ def _print_event(event: dict, _printed: set, max_length=1500):
             msg_repr = message.pretty_repr(html=True)
             if len(msg_repr) > max_length:
                 msg_repr = msg_repr[:max_length] + " ... (truncated)"
-            print(msg_repr)
+            logger.debug("%s",msg_repr)
             _printed.add(message.id)
 
 class UserQueryRequest(BaseModel):
