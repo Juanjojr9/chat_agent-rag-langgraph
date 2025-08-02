@@ -12,7 +12,7 @@ class Assistant:
         self.runnable: Runnable = runnable
         self.max_retries: int = max_retries
 
-    def __call__(self, state: State, config: RunnableConfig):
+    def __call__(self, state: State, config: RunnableConfig | None = None):
         retries = 0
         while retries < self.max_retries:
                 result = self.runnable.invoke(state, config)
