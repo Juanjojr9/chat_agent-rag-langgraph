@@ -13,6 +13,10 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
 )
 
+from typing import Literal
+
+idioma: Literal["es", "en"] = "es"
+
 prompt = (
     ChatPromptTemplate.from_messages([
         SystemMessagePromptTemplate.from_template(
@@ -29,6 +33,7 @@ prompt = (
     .partial(
         time=datetime.now(ZoneInfo("Europe/Madrid")).strftime("%A, %d %B %Y, %H:%M"),
         client="JuanJo",
+        idioma=idioma,
     )
 )
 
